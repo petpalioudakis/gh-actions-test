@@ -57,5 +57,5 @@ jobs:
             - name: Output files
               run: ls      
             - name: Deploy Project
-              run: npm run deploy                     
+              run: echo "Deploy..."                     
               
