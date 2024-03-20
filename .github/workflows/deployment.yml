@@ -3,11 +3,15 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '.github/workflows/*'  
   pull_request:
     types:
       - opened
       - synchronize
-      - reopened    
+      - reopened
+    branches:
+      - master     
   workflow_dispatch:     
 jobs:
     test:
@@ -20,10 +24,10 @@ jobs:
               with:
                   node-version: '20'
             - name: Install dependencies
-              run: npm ci
+              run: npm ci  
             - name: Run tests
               run: npm test
-    deploy:
+    build:
         needs: test
         runs-on: ubuntu-latest
         steps:
@@ -37,6 +41,21 @@ jobs:
               run: npm ci
             - name: Build Project
               run: npm run build
-            - name: Deploy
-              run: echo "Deploynig Project..."              
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist-files
+                  path: dist  
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get build artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: dist-files
+            - name: Output files
+              run: ls      
+            - name: Deploy Project
+              run: npm run deploy                     
               
