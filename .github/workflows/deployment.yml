@@ -1,5 +1,14 @@
 name: Deploy Project
-on: [push, workflow_dispatch]
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened    
+  workflow_dispatch:     
 jobs:
     test:
         runs-on: ubuntu-latest
